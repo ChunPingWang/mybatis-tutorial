@@ -21,10 +21,13 @@ src/
 │   │   ├── App.java                  # 主程式 (示範入口)
 │   │   ├── mapper/
 │   │   │   ├── UserMapper.java       # 使用者 Mapper (XML 方式)
-│   │   │   └── OrderMapper.java      # 訂單 Mapper (註解方式)
+│   │   │   ├── OrderMapper.java      # 訂單 Mapper (註解方式)
+│   │   │   └── ProductMapper.java    # 商品 Mapper (進階 XML 示範)
 │   │   ├── model/
 │   │   │   ├── User.java             # 使用者實體
-│   │   │   └── Order.java            # 訂單實體
+│   │   │   ├── Order.java            # 訂單實體
+│   │   │   ├── Product.java          # 商品實體
+│   │   │   └── Category.java         # 分類實體
 │   │   └── util/
 │   │       └── MyBatisUtil.java      # SqlSessionFactory 工具類別
 │   └── resources/
@@ -35,11 +38,13 @@ src/
 │       │   └── data.sql               # 初始資料
 │       └── mapper/
 │           ├── UserMapper.xml         # 使用者 SQL 映射
-│           └── OrderMapper.xml        # 訂單 SQL 映射
+│           ├── OrderMapper.xml        # 訂單 SQL 映射
+│           └── ProductMapper.xml      # 商品 SQL 映射 (進階 XML 示範)
 └── test/
     └── java/com/example/mybatis/mapper/
         ├── UserMapperTest.java        # 使用者 Mapper 測試
-        └── OrderMapperTest.java       # 訂單 Mapper 測試
+        ├── OrderMapperTest.java       # 訂單 Mapper 測試
+        └── ProductMapperTest.java     # 商品 Mapper 測試
 ```
 
 ## 教程涵蓋功能
@@ -50,21 +55,35 @@ src/
 - 更新 (Update) — 選擇性更新非 null 欄位
 - 刪除 (Delete)
 
-### 2. 動態 SQL
+### 2. 動態 SQL (基礎)
 - `<if>` — 條件判斷
 - `<where>` — 智慧 WHERE 子句
 - `<set>` — 智慧 SET 子句 (避免多餘逗號)
 - `<foreach>` — 批次 IN 查詢
 
-### 3. 關聯查詢
+### 3. 動態 SQL (進階) — ProductMapper
+- `<choose>` / `<when>` / `<otherwise>` — 類似 switch-case 的條件分支
+- `<trim>` — 自訂前綴/後綴裁剪 (取代 `<where>` 和 `<set>` 的靈活替代方案)
+- `<bind>` — OGNL 變數綁定 (跨資料庫相容的模糊搜尋)
+- `<foreach>` 批次插入 — 一次 INSERT 多筆資料
+- `<foreach>` 批次刪除 — IN 子句批次操作
+- `<selectKey>` — 主鍵生成策略 (搭配 Sequence)
+
+### 4. 關聯查詢
 - **一對多** — User → Orders (`<collection>`)
 - **多對一** — Order → User (`<association>`)
+- **巢狀查詢** — Product → Category (Nested Select + 延遲載入)
 
-### 4. 兩種 SQL 定義方式
-- **XML 映射檔** — `UserMapper.xml` (適合複雜 SQL)
+### 5. 兩種 SQL 定義方式
+- **XML 映射檔** — `UserMapper.xml`、`ProductMapper.xml` (適合複雜 SQL)
 - **註解方式** — `OrderMapper.java` 使用 `@Select`, `@Insert`, `@Update`, `@Delete`
 
-### 5. 其他特性
+### 6. 參數傳遞方式
+- `@Param` 註解命名參數
+- 實體物件傳遞
+- `Map<String, Object>` 傳遞多個動態參數
+
+### 7. 其他特性
 - 駝峰命名自動映射 (`mapUnderscoreToCamelCase`)
 - SQL 片段重用 (`<sql>` + `<include>`)
 - ResultMap 繼承 (`extends`)
@@ -86,4 +105,10 @@ mvn exec:java -Dexec.mainClass="com.example.mybatis.App"
 mvn test
 ```
 
-測試包含 17 個測試案例，涵蓋所有 CRUD、動態 SQL 和關聯查詢功能。
+測試包含 41 個測試案例，涵蓋所有 CRUD、動態 SQL、關聯查詢和進階 XML 功能。
+
+| 測試類別 | 測試數 | 涵蓋功能 |
+|---------|--------|---------|
+| UserMapperTest | 10 | CRUD, 動態 SQL, 一對多 |
+| OrderMapperTest | 7 | 註解 CRUD, 多對一 |
+| ProductMapperTest | 24 | choose, trim, bind, foreach, 巢狀查詢, selectKey, Map 參數 |
