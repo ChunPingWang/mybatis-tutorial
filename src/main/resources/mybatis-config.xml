@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <!-- 開啟駝峰命名自動映射 (例如: user_name -> userName) -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 開啟延遲載入 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 開啟二級快取 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 設定日誌實現 -->
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+
+    <!-- 類型別名 -->
+    <typeAliases>
+        <package name="com.example.mybatis.model"/>
+    </typeAliases>
+
+    <!-- 環境配置 -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="org.h2.Driver"/>
+                <property name="url" value="jdbc:h2:mem:mybatis_tutorial;DB_CLOSE_DELAY=-1"/>
+                <property name="username" value="sa"/>
+                <property name="password" value=""/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 映射器 -->
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/OrderMapper.xml"/>
+    </mappers>
+
+</configuration>
